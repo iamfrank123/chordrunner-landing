@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description"
+    content="Chord Runner Demo — Play major chords with your MIDI piano and defeat monsters in this rhythm-action game. Free demo, no download required." />
+  <meta property="og:title" content="🎹 Chord Runner — Free Demo" />
+  <meta property="og:description"
+    content="Connect your MIDI keyboard and start playing! Dodge obstacles by playing major chords. Free demo available now." />
+  <title>🎹 Chord Runner — Free Demo</title>
+  <link rel="stylesheet" href="css/demo.css" />
+  <!-- PWA -->
+  <link rel="manifest" href="mobile/manifest.json" />
+  <meta name="theme-color" content="#a29bfe" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ChordRunner" />
+  <link rel="apple-touch-icon" href="mobile/icons/icon-192.png" />
+</head>
+
+<body>
+
+  <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="logo-icon">🎹</span>
+      <span class="logo-text">Chord Runner</span>
+      <span class="nav-badge">Demo</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#demo-content">The Demo</a></li>
+      <li><a href="#full-version">Full Version</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ HERO ════════════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-eyebrow">🎮 Free Playable Demo — No Download</div>
+
+    <h1 class="hero-title">
+      <span class="line1">Play Music.</span>
+      <span class="line2">Defeat Monsters.</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Connect your MIDI keyboard or electric piano and play major chords to jump
+      over obstacles and battle enemies in real time. A rhythm-action game unlike
+      anything you've played before.
+    </p>
+
+    <div class="hero-cta">
+      <a id="btn-start-demo" href="game.html" class="btn-demo">
+        <span class="btn-icon">🎮</span>
+        Play the Demo — Free
+      </a>
+      <a href="#how-it-works" class="btn-howto">
+        ↓ How does it work?
+      </a>
+      <p class="demo-note">Demo includes major chords on natural roots · No account needed</p>
+    </div>
+
+    <!-- Decorative piano keys -->
+    <div class="piano-deco" aria-hidden="true">
+      <div class="key-w"></div>
+      <div class="key-b"></div>
+      <div class="key-w"></div>
+      <div class="key-b"></div>
+      <div class="key-w"></div>
+      <div class="key-w"></div>
+      <div class="key-b"></div>
+      <div class="key-w"></div>
+      <div class="key-b"></div>
+      <div class="key-w"></div>
+      <div class="key-b"></div>
+      <div class="key-w"></div>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT WORKS ═════════════════════════════════════════ -->
+  <section id="how-it-works">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Your keyboard is your controller.</h2>
+    <p class="section-sub">
+      Chord Runner uses the <strong>Web MIDI API</strong> to receive input directly from
+      your electric piano or MIDI keyboard — no plugins, no drivers, no downloads.
+    </p>
+
+    <div class="steps-grid reveal">
+
+      <div class="step-card" style="--accent: linear-gradient(90deg, #a29bfe, #6c63ff);">
+        <div class="step-num">Step 01</div>
+        <span class="step-icon">🎹</span>
+        <h3>Connect Your Keyboard</h3>
+        <p>Plug in any USB MIDI keyboard or electric piano. The game detects it automatically
+          via the Web MIDI API — works in Chrome &amp; Edge out of the box.</p>
+      </div>
+
+      <div class="step-card" style="--accent: linear-gradient(90deg, #06d6a0, #00b894);">
+        <div class="step-num">Step 02</div>
+        <span class="step-icon">🏃</span>
+        <h3>Jump Over Obstacles</h3>
+        <p>Chord blocks come flying at your character. Each block shows the chord you must
+          play. Hit the right notes and your character leaps over it — miss and you lose a life.</p>
+      </div>
+
+      <div class="step-card" style="--accent: linear-gradient(90deg, #ffd166, #ff9500);">
+        <div class="step-num">Step 03</div>
+        <span class="step-icon">⚔️</span>
+        <h3>Battle Monsters</h3>
+        <p>Monsters appear mid-run. Enter combat mode: play the displayed chord within the
+          time window to deal damage. Survive and defeat them to keep running.</p>
+      </div>
+
+      <div class="step-card" style="--accent: linear-gradient(90deg, #ff6b9d, #d63031);">
+        <div class="step-num">Step 04</div>
+        <span class="step-icon">🏆</span>
+        <h3>Score &amp; Improve</h3>
+        <p>Every correct chord earns points. Perfect timing gives bonus score.
+          Build muscle memory for chord shapes while having fun — learning through play.</p>
+      </div>
+
+    </div>
+
+    <!-- MIDI Requirement callout -->
+    <div class="midi-callout reveal">
+      <div class="midi-callout-icon">🎹</div>
+      <div>
+        <h3>Designed for MIDI Keyboards</h3>
+        <p>
+          This game is built to be played with an <strong>electric piano or USB MIDI controller</strong>.
+          Connect via USB to your computer, open the game in Chrome or Edge, and grant MIDI
+          access when the browser asks. The game receives your notes in real time — no latency,
+          no configuration needed.
+        </p>
+        <p class="also-note">
+          No MIDI keyboard? <strong>No problem</strong> — use the on-screen virtual buttons to try
+          the game anyway. Virtual mode is perfect for getting a feel of the gameplay before
+          connecting a real keyboard.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ DEMO CONTENT ═════════════════════════════════════════ -->
+  <section id="demo-content">
+    <div class="section-label">Free Demo</div>
+    <h2 class="section-title">What's included in the demo</h2>
+    <p class="section-sub">
+      The demo gives you a genuine taste of the full Chord Runner experience,
+      focused on the most beginner-friendly chord set.
+    </p>
+
+    <div class="demo-scope reveal">
+      <h2>🎵 Demo Mode</h2>
+      <p class="sub">Play, explore, and get hooked — completely free.</p>
+
+      <div class="demo-features">
+        <div class="demo-feat">
+          <span class="feat-icon">✅</span>
+          <div><strong>7 Major Triads</strong> — C, D, E, F, G, A, B on natural (white) keys</div>
+        </div>
+        <div class="demo-feat">
+          <span class="feat-icon">✅</span>
+          <div><strong>Full runner gameplay</strong> — obstacles, timing window, score system</div>
+        </div>
+        <div class="demo-feat">
+          <span class="feat-icon">✅</span>
+          <div><strong>Combat system</strong> — monsters, attack chords, battle music</div>
+        </div>
+        <div class="demo-feat">
+          <span class="feat-icon">✅</span>
+          <div><strong>60-second run</strong> — full timed session with final score</div>
+        </div>
+        <div class="demo-feat">
+          <span class="feat-icon">✅</span>
+          <div><strong>MIDI &amp; Virtual keyboard</strong> — play on your instrument or on screen</div>
+        </div>
+        <div class="demo-feat">
+          <span class="feat-icon">✅</span>
+          <div><strong>No account, no download</strong> — runs entirely in the browser</div>
+        </div>
+      </div>
+    </div>
+
+    <a href="game.html" class="btn-demo" id="btn-start-demo-2" style="margin-top: 0;">
+      <span class="btn-icon">🎮</span>
+      Start Playing — Free Demo
+    </a>
+  </section>
+
+  <!-- ══ FULL VERSION ══════════════════════════════════════════ -->
+  <section id="full-version">
+    <div class="fv-container">
+      <div class="fv-badge">⭐ Full Version Included</div>
+      <h2 class="fv-title">Everything unlocked in the Full Version</h2>
+      <p class="fv-sub">
+        The full game is a complete music-learning system disguised as an action game.
+        Here's everything that goes beyond the demo.
+      </p>
+
+      <!-- Prominent Download Button -->
+      <div style="margin: 32px 0 48px; animation: fadeDown 0.7s 0.4s ease both;">
+        <a href="https://payhip.com/b/I3lgE" target="_blank" class="btn-full-game">
+          <span class="btn-icon">⭐</span>
+          GET THE FULL GAME HERE
+        </a>
+      </div>
+
+      <!-- Chord type progression -->
+      <div class="chord-types-row reveal">
+        <div class="chord-pill demo">✅ Major Triads</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Minor Triads</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Augmented</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Diminished</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Sus2 / Sus4</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Major 7th</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Minor 7th</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Dominant 7th</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Half-Dim (m7♭5)</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Major 9th</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> Minor 9th</div>
+        <div class="chord-pill locked"><span class="lock-icon">🔒</span> All 12 Chromatic Roots</div>
+      </div>
+
+      <!-- Feature cards -->
+      <div class="fv-grid reveal">
+
+        <div class="fv-card">
+          <span class="fv-card-icon">🎵</span>
+          <h3>9 Structured Levels</h3>
+          <p>Progress from Major Triads all the way to the Ultimate Mix — every chord type
+            in all 12 keys, with scaling speed and obstacle density.</p>
+        </div>
+
+        <div class="fv-card">
+          <span class="fv-card-icon">⚔️</span>
+          <h3>Advanced Survival Mode</h3>
+          <p>Endless combat run with adaptive difficulty, configurable chord complexity,
+            timed or unlimited sessions, and deep monster variety.</p>
+        </div>
+
+        <div class="fv-card">
+          <span class="fv-card-icon">🎛️</span>
+          <h3>Customised Mode</h3>
+          <p>Hand-pick exactly which chord types to train — combine any subset of all
+            supported types and choose natural or chromatic roots.</p>
+        </div>
+
+        <div class="fv-card">
+          <span class="fv-card-icon">👁️</span>
+          <h3>Adaptive Difficulty</h3>
+          <p>Obstacle spawn rate and speed adjust to your chord level. Easy on Level 1,
+            extremely challenging at Level 9 — always the right push.</p>
+        </div>
+
+        <div class="fv-card">
+          <span class="fv-card-icon">👾</span>
+          <h3>9 Monster Types</h3>
+          <p>Gremlin, Shambler, Brute, Imp, Wraith, Golem, Warlord, Voidwalker, Elite Overlord —
+            each with unique HP pools, attack patterns, and visual design.</p>
+        </div>
+
+        <div class="fv-card">
+          <span class="fv-card-icon">💖</span>
+          <h3>Heal Orbs &amp; Heavy Attacks</h3>
+          <p>Collect heal orbs by playing the right single note. Counter heavy monster attacks
+            with precision timing for bonus damage and score multipliers.</p>
+        </div>
+
+        <div class="fv-card">
+          <span class="fv-card-icon">🛠️</span>
+          <h3>Full Game Settings</h3>
+          <p>Configure obstacle respawn speed, run duration, chord penalty toggles,
+            wait-mode, and monster response windows to match your skill level.</p>
+        </div>
+
+        <div class="fv-card">
+          <span class="fv-card-icon">📈</span>
+          <h3>Progressive Learning System</h3>
+          <p>The game is structured as a genuine chord curriculum — from beginner triads
+            to jazz-level extended chords, all learned through gameplay muscle memory.</p>
+        </div>
+
+      </div>
+
+      <!-- Footer CTA -->
+      <div class="fv-cta reveal">
+        <a href="game.html" class="btn-demo" id="btn-start-demo-3">
+          <span class="btn-icon">🎮</span>
+          Try the Demo First — It's Free
+        </a>
+        <p>Experience the game, then unlock the full version.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════════ -->
+  <footer>
+    <p>© 2026 Chord Runner · Free Demo</p>
+    <div class="footer-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#full-version">Full Version</a>
+      <a href="game.html">Play Demo</a>
+    </div>
+  </footer>
+
+  <!-- Scroll reveal script -->
+  <script>
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+
+  <!-- Mobile PWA (no-op on desktop) -->
+  <script>window.CR_SW_PATH = '/mobile/sw.js';</script>
+  <script src="mobile/pwa.js"></script>
+
+</body>
+</html>

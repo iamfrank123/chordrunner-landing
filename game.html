@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description"
+    content="Chord Runner Demo — Play major chords on your MIDI keyboard and defeat monsters. Free playable demo." />
+  <title>🎹 Chord Runner — Play Demo</title>
+  <!-- PWA -->
+  <link rel="manifest" href="mobile/manifest.json" />
+  <meta name="theme-color" content="#a29bfe" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ChordRunner" />
+  <link rel="apple-touch-icon" href="mobile/icons/icon-192.png" />
+
+  <script>
+    // Inject versioned CSS (engine/ is the copied shared folder)
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'engine/style.css?v=' + Date.now();
+    document.head.appendChild(link);
+  </script>
+
+  <!-- Phaser 3 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+
+<body>
+  <div id="app-wrapper">
+
+    <!-- ══ MIDI Input Overlay ══════════════════════════════════ -->
+    <div id="demo-midi-overlay" class="overlay">
+      <div class="overlay-box" style="max-width: 640px;">
+
+        <!-- Back to menu -->
+        <a href="index.html"
+           style="position:absolute; top:24px; left:28px; color:rgba(255,255,255,0.35);
+                  font-size:0.85rem; font-weight:700; text-decoration:none;
+                  display:flex; align-items:center; gap:6px; transition:color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.8)'"
+           onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+          ← Back to Menu
+        </a>
+
+        <h2>🎹 Chord Runner</h2>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:-12px;">
+          <span style="font-size:0.72rem; font-weight:800; letter-spacing:0.14em;
+                       text-transform:uppercase; color:#ffd166;
+                       background:rgba(255,209,102,0.12); border:1px solid rgba(255,209,102,0.3);
+                       border-radius:99px; padding:4px 12px;">
+            Demo — Major Chords Only
+          </span>
+        </div>
+
+        <p style="font-size:1rem; color:rgba(255,255,255,0.55); max-width:400px; line-height:1.65;">
+          Connect your <strong style="color:#fff;">MIDI keyboard or electric piano</strong>
+          via USB, or <strong style="color:#ffd166;">left-click on the screen</strong> to jump obstacles if you don't have one.
+        </p>
+
+        <!-- Demo scope reminder -->
+        <div style="width:100%; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2);
+                    border-radius:20px; padding:20px 24px; text-align:left;">
+          <div style="font-size:0.7rem; font-weight:800; letter-spacing:0.14em;
+                      text-transform:uppercase; color:#06d6a0; margin-bottom:12px;">
+            🎮 Demo Includes
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.88rem; color:rgba(255,255,255,0.65);">
+            <div>✅ Major chords: C D E F G A B</div>
+            <div>✅ Full run gameplay (60s)</div>
+            <div>✅ Monster combat system</div>
+            <div>✅ MIDI + Virtual keyboard</div>
+          </div>
+        </div>
+
+        <div class="overlay-buttons" style="width:100%;">
+          <button id="demo-btn-midi" class="btn-primary" style="font-size:1.1rem; padding:18px;">
+            🎹 Use MIDI Keyboard
+          </button>
+          <button id="demo-btn-virtual" class="btn-secondary" style="font-size:1rem; padding:14px;">
+            🖱️ Left click to jump the obstacles (no keyboard)
+          </button>
+        </div>
+
+        <p id="demo-midi-status" class="status-text"></p>
+
+        <!-- Full version teaser -->
+        <div style="margin-top:8px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.06);
+                    width:100%; text-align:center;">
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.28);">
+            Full version includes all chord types (triads → 9ths), 9 levels, Survival Mode,
+            Customised Mode &amp; all 12 chromatic roots.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Game Over Overlay ════════════════════════════════════ -->
+    <div id="gameover-overlay" class="overlay hidden">
+      <div class="overlay-box">
+        <h2>💀 Game Over</h2>
+        <p id="final-score-text">Final Score: 0</p>
+        <button id="btn-restart" class="btn-primary">🔄 Try Again</button>
+        <button id="btn-main-menu-fail" class="btn-secondary"
+          style="margin-top: 10px; background: linear-gradient(135deg, #ffd166, #ff9500); color: #1a1a2e; font-weight: 900; box-shadow: 0 4px 15px rgba(255, 149, 0, 0.4); text-transform: uppercase;">
+          ⭐ GET THE FULL GAME
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ Level Complete Overlay ═══════════════════════════════ -->
+    <div id="levelcomplete-overlay" class="overlay hidden">
+      <div class="overlay-box">
+        <h2>🏆 Demo Complete!</h2>
+        <p id="level-score-text">Score: 0</p>
+        <button id="btn-nextlevel" class="btn-primary" style="display:none;">➡️ Next Level</button>
+        <button id="btn-repeat-level-win" class="btn-primary">🔄 Play Again</button>
+        <button id="btn-main-menu-win" class="btn-secondary"
+          style="margin-top: 10px; background: linear-gradient(135deg, #ffd166, #ff9500); color: #1a1a2e; font-weight: 900; box-shadow: 0 4px 15px rgba(255, 149, 0, 0.4); text-transform: uppercase;">
+          ⭐ GET THE FULL GAME
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ Survival Overlay (won't appear in demo, but required by engine) ═ -->
+    <div id="survival-overlay" class="overlay hidden">
+      <div class="overlay-box survival-box">
+        <h2 id="surv-title">⚔️ Survived!</h2>
+        <hr class="surv-divider">
+        <div class="surv-time-display">
+          <span class="surv-time-label">⏱ Time Survived</span>
+          <span id="surv-time">0:00</span>
+        </div>
+        <div class="surv-stats-grid">
+          <div class="surv-stat"><div class="surv-val" id="surv-correct">0</div><div class="surv-lbl">✅ Correct</div></div>
+          <div class="surv-stat"><div class="surv-val" id="surv-wrong">0</div><div class="surv-lbl">❌ Wrong</div></div>
+          <div class="surv-stat"><div class="surv-val" id="surv-monsters">0</div><div class="surv-lbl">👾 Monsters</div></div>
+          <div class="surv-stat"><div class="surv-val" id="surv-accuracy">—%</div><div class="surv-lbl">🎯 Accuracy</div></div>
+        </div>
+        <div class="surv-score" id="surv-score">Score: 0</div>
+        <button id="btn-surv-restart" class="btn-primary">🔄 Play Again</button>
+        <button id="btn-surv-menu" class="btn-secondary" style="margin-top:8px; background: linear-gradient(135deg, #ffd166, #ff9500); color: #1a1a2e; font-weight: 900; box-shadow: 0 4px 15px rgba(255, 149, 0, 0.4); text-transform: uppercase;">⭐ GET THE FULL GAME</button>
+      </div>
+    </div>
+
+    <!-- ══ HUD ═══════════════════════════════════════════════════ -->
+    <div id="hud">
+      <button id="btn-home-hud"
+        style="background:rgba(0,0,0,0.6); border:2px solid white; border-radius:8px;
+               color:white; cursor:pointer; display:flex; align-items:center;
+               justify-content:center; font-size:1.2rem; padding:0 12px; margin-right:8px;"
+        onclick="window.location.href='index.html'" title="Main Menu">🏠</button>
+
+      <div id="hud-lives">❤️ <span id="lives-count">5</span></div>
+      <div id="hud-score">⭐ <span id="score-count">0</span></div>
+      <div id="hud-timer">⏱️ <span id="timer-count">60</span><span id="timer-unit">s</span></div>
+      <div id="hud-level">🎵 <span id="level-name">Major Chords</span>
+        <div id="hud-preview" class="hidden"
+          style="color:#06d6a0; font-size:0.75rem; margin-top:4px; line-height:1.2;"></div>
+      </div>
+      <div id="hud-speed">🚀 <span id="speed-name">5s</span></div>
+
+      <!-- Demo badge in HUD -->
+      <div style="font-size:0.65rem; font-weight:800; letter-spacing:0.1em;
+                  text-transform:uppercase; color:#ffd166;
+                  background:rgba(255,209,102,0.1); border:1px solid rgba(255,209,102,0.25);
+                  border-radius:99px; padding:3px 10px; margin-left:auto;">
+        DEMO
+      </div>
+
+      <div id="hud-player-hp" style="display:none; font-size:1.1rem; letter-spacing:2px;">❤️❤️❤️❤️❤️</div>
+    </div>
+
+    <!-- ══ Combat Panel ══════════════════════════════════════════ -->
+    <div id="hud-combat-panel" class="hidden">
+      <div id="hud-combat-timer-text"
+        style="font-family:monospace; font-size:1.1rem; font-weight:bold;
+               color:#ffd166; margin-bottom:4px; text-shadow:1px 1px 2px #000;">8.0s</div>
+      <div style="width:100%; height:8px; background:rgba(0,0,0,0.5);
+                  border-radius:4px; margin-bottom:8px;
+                  border:1px solid rgba(255,255,255,0.2); overflow:hidden;">
+        <div id="hud-combat-timer-fill"
+          style="height:100%; width:100%; background:#ffd166; border-radius:4px;"></div>
+      </div>
+      <div style="font-size:0.75rem; color:rgba(255,255,255,0.6); margin-bottom:3px;">⚔️ Attack chord:</div>
+      <span id="hud-combat-chord" class="combat-chord">—</span>
+    </div>
+
+    <!-- ══ Event Banner ══════════════════════════════════════════ -->
+    <div id="hud-event-banner" class="hidden"></div>
+
+    <!-- ══ Heal Orb Panel ════════════════════════════════════════ -->
+    <div id="hud-heal-orb-panel" class="hidden">
+      <div style="font-size:0.8rem; color:#06d6a0; margin-bottom:4px;">💖 Play note:</div>
+      <div id="hud-heal-orb-note" style="font-size:1.6rem; font-weight:bold; color:#fff;">C</div>
+    </div>
+
+    <!-- ══ Phaser Canvas ═════════════════════════════════════════ -->
+    <div id="game-container"></div>
+
+    <!-- ══ Chord Panel ═══════════════════════════════════════════ -->
+    <div id="chord-panel">
+      <div id="chord-required">
+        <span class="chord-label">Required chord:</span>
+        <span id="chord-name" class="chord-name">—</span>
+      </div>
+      <div id="chord-played">
+        <span class="chord-label">You are playing:</span>
+        <span id="notes-played" class="chord-name dim">—</span>
+      </div>
+    </div>
+
+    <!-- ══ Virtual Keyboard ══════════════════════════════════════ -->
+    <div id="demo-virtual-keyboard" class="hidden"
+      style="position:fixed; bottom:0; left:0; right:0; z-index:50;
+             display:flex; flex-direction:column; align-items:center;
+             padding:8px 16px; gap:6px;
+             background:rgba(10,12,30,0.85); backdrop-filter:blur(14px);
+             border-top:1px solid rgba(255,255,255,0.06);">
+      <p class="vk-label">Touch a chord to play:</p>
+      <div id="demo-vk-buttons" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"></div>
+    </div>
+
+    <!-- "notes-played" element (used by demoMidi, must exist outside chord-panel too) -->
+    <!-- chord-panel #notes-played serves this purpose — demoMidi references it directly -->
+
+  </div><!-- /app-wrapper -->
+
+  <!-- ══ Scripts — load shared engine from parent folder ════════ -->
+  <script>
+    (function () {
+      var v = '?v=' + Date.now();
+      var scripts = [
+        // Demo flag system (must load first)
+        'js/demoConfig.js',
+        // Shared core engine (copied into engine/ by build script)
+        'engine/config.js',
+        'engine/chords.js',
+        // Demo-specific MIDI manager (replaces engine/midi.js)
+        'js/demoMidi.js',
+        // Shared HUD and scenes
+        'engine/hud.js',
+        'engine/combat/GameState.js',
+        'engine/combat/MonsterSystem.js',
+        'engine/combat/HealOrb.js',
+        'engine/combat/CombatScene.js',
+        'engine/scenes/BootScene.js',
+        'engine/scenes/GameScene.js',
+        'engine/scenes/UIScene.js',
+        // Demo main
+        'js/demoMain.js',
+      ];
+      scripts.forEach(function (s) {
+        document.write('<script src="' + s + v + '"><\/script>');
+      });
+    })();
+  </script>
+
+  <!-- Mobile PWA (no-op on desktop) -->
+  <script>window.CR_SW_PATH = '/mobile/sw.js';</script>
+  <script src="mobile/pwa.js"></script>
+
+</body>
+</html>

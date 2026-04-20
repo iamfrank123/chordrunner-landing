@@ -1,0 +1,409 @@
+/* ============================================================
+   MIDI Chord Runner — Mobile CSS Overrides
+   Loaded only on touch/mobile devices via pwa.js (not desktop).
+   All rules are additive — they do NOT override desktop styles
+   unless the .mobile-device class is present on <html>.
+   ============================================================ */
+
+/* ── Base: applied when JS adds .mobile-device to <html> ──── */
+
+/* Prevent text resize on orientation change */
+html.mobile-device {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Safe area insets for notched phones */
+html.mobile-device body {
+  padding-env: safe-area-inset-top safe-area-inset-right safe-area-inset-bottom safe-area-inset-left;
+}
+
+/* ── App wrapper: respect safe areas ───────────────────────── */
+html.mobile-device #app-wrapper {
+  /* iOS notch / bottom bar safe areas */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* ── HUD — compact top bar ──────────────────────────────────── */
+html.mobile-device #hud {
+  padding: 4px 10px;
+  height: 44px;
+  gap: 6px;
+}
+
+html.mobile-device #hud > div {
+  font-size: 0.82rem;
+  gap: 4px;
+}
+
+html.mobile-device #hud-lives span,
+html.mobile-device #hud-score span,
+html.mobile-device #hud-timer span {
+  font-size: 1rem;
+}
+
+html.mobile-device #hud-level span {
+  font-size: 0.82rem;
+}
+
+html.mobile-device #hud-speed {
+  display: none; /* hide speed badge on mobile to save space */
+}
+
+/* ── Chord Panel — compact bottom bar ───────────────────────── */
+html.mobile-device #chord-panel {
+  padding: 4px 12px 6px;
+  min-height: 48px;
+  gap: 10px;
+}
+
+html.mobile-device .chord-name {
+  font-size: 1.35rem;
+}
+
+html.mobile-device .chord-label {
+  font-size: 0.58rem;
+}
+
+/* ── Game container: full screen (Phaser manages its own scaling) ── */
+/* NOTE: do NOT restrict top/bottom here — Phaser sizes the canvas   */
+/* to fill the container; the HUD and chord panel overlay on top.    */
+html.mobile-device #game-container {
+  position: absolute;
+  inset: 0;
+  padding-bottom: 75px; /* Spazio protetto per il chord-panel sovrastante */
+  box-sizing: border-box;
+}
+
+/* ── Overlay boxes — fit small screens ─────────────────────── */
+html.mobile-device .overlay {
+  padding: 12px 0;
+  align-items: flex-start;
+}
+
+html.mobile-device .overlay-box {
+  padding: 20px 16px;
+  border-radius: 20px;
+  gap: 16px;
+  width: 98%;
+  max-width: 98%;
+  max-height: 85vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.mobile-device .overlay-box h2 {
+  font-size: 1.6rem;
+}
+
+html.mobile-device .overlay-box p {
+  font-size: 0.88rem;
+}
+
+/* ── Mode selection grid: stack vertically on phones ────────── */
+html.mobile-device .desktop-modes-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+}
+
+html.mobile-device .mode-col {
+  padding: 14px;
+  border-radius: 14px;
+}
+
+/* ── Global setup bar: wrap tightly ────────────────────────── */
+html.mobile-device .global-setup-bar {
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+}
+
+html.mobile-device .global-setup-bar > div {
+  font-size: 0.85rem;
+}
+
+/* ── Buttons: full-width, comfortable touch targets ─────────── */
+html.mobile-device .btn-primary,
+html.mobile-device .btn-secondary {
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  min-height: 48px;
+}
+
+/* ── Virtual keyboard buttons — larger touch targets ─────────── */
+html.mobile-device .vk-btn {
+  min-height: 44px;
+  min-width: 60px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  border-radius: 10px;
+}
+
+/* ── Combat chord panel — above chord panel ─────────────────── */
+html.mobile-device #hud-combat-panel {
+  bottom: 56px;
+  padding: 8px 16px;
+  border-radius: 12px;
+}
+
+html.mobile-device .combat-chord {
+  font-size: 1.7rem;
+}
+
+/* ── Event banner — just below HUD ─────────────────────────── */
+html.mobile-device #hud-event-banner {
+  top: 48px;
+  font-size: 0.9rem;
+  padding: 6px 16px;
+  border-radius: 10px;
+  white-space: nowrap;
+  max-width: 90vw;
+}
+
+/* ── Heal orb panel — reduce right offset ───────────────────── */
+html.mobile-device #hud-heal-orb-panel {
+  right: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+}
+
+/* ── Survival overlay box ───────────────────────────────────── */
+html.mobile-device .survival-box {
+  min-width: unset !important;
+  width: 96vw !important;
+  max-width: 96vw !important;
+  padding: 20px 14px 14px !important;
+  gap: 12px !important;
+  border-radius: 20px !important;
+}
+
+html.mobile-device .survival-box h2 {
+  font-size: 1.5rem !important;
+}
+
+html.mobile-device .surv-time-display {
+  font-size: 2.2rem;
+}
+
+html.mobile-device .surv-stats-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+html.mobile-device .surv-stat {
+  padding: 12px 6px 10px;
+  border-radius: 12px;
+}
+
+html.mobile-device .surv-val {
+  font-size: 1.5rem;
+}
+
+html.mobile-device .surv-lbl {
+  font-size: 0.58rem;
+}
+
+html.mobile-device .surv-score {
+  font-size: 1rem;
+  padding: 10px 16px;
+}
+
+/* ── Selects and inputs: avoid overflow ─────────────────────── */
+html.mobile-device select,
+html.mobile-device input[type="number"],
+html.mobile-device input[type="text"] {
+  padding: 8px 10px !important;
+  font-size: 0.85rem !important;
+}
+
+/* ── Checkboxes/radios: ensure tap target ───────────────────── */
+html.mobile-device input[type="radio"],
+html.mobile-device input[type="checkbox"] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ROTATE PROMPT — full-screen overlay in portrait mode
+   ═══════════════════════════════════════════════════════════ */
+#cr-rotate-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #0d0f1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  animation: cr-fade-in 0.3s ease;
+}
+
+#cr-rotate-prompt .cr-rotate-icon {
+  font-size: 5rem;
+  animation: cr-spin-phone 1.8s ease-in-out infinite;
+  transform-origin: center;
+  line-height: 1;
+}
+
+#cr-rotate-prompt .cr-rotate-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #a29bfe;
+  text-align: center;
+  padding: 0 32px;
+}
+
+#cr-rotate-prompt .cr-rotate-sub {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  padding: 0 40px;
+  line-height: 1.5;
+}
+
+@keyframes cr-spin-phone {
+  0%   { transform: rotate(0deg) scale(1); }
+  30%  { transform: rotate(90deg) scale(1.1); }
+  60%  { transform: rotate(90deg) scale(1.05); }
+  80%  { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes cr-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PWA INSTALL BUTTON (Android)
+   ═══════════════════════════════════════════════════════════ */
+#cr-install-btn {
+  position: fixed;
+  bottom: 60px;
+  right: 12px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(13, 15, 26, 0.88);
+  border: 1px solid rgba(162, 155, 254, 0.5);
+  border-radius: 99px;
+  color: #a29bfe;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(108, 99, 255, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+#cr-install-btn:active {
+  transform: scale(0.95);
+}
+
+#cr-install-btn .cr-install-icon {
+  font-size: 1.1rem;
+}
+
+#cr-install-btn.cr-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   iOS INSTALL TOAST
+   ═══════════════════════════════════════════════════════════ */
+#cr-ios-toast {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  width: min(340px, 90vw);
+  background: rgba(13, 15, 26, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 16px 18px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  animation: cr-toast-up 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Outfit', sans-serif;
+}
+
+#cr-ios-toast .cr-toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#cr-ios-toast .cr-toast-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+#cr-ios-toast .cr-toast-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#cr-ios-toast .cr-toast-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#cr-ios-toast .cr-toast-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.4;
+}
+
+#cr-ios-toast .cr-step-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+#cr-ios-toast .cr-toast-arrow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(13, 15, 26, 0.95);
+}
+
+#cr-ios-toast.cr-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes cr-toast-up {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
