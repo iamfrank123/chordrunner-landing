@@ -5,8 +5,8 @@
 const CACHE_NAME = 'chord-runner-demo-v1';
 
 const SHELL_ASSETS = [
-  '/game.html',
-  '/index.html',
+  '/game',
+  '/',
   '/engine/style.css',
   '/css/demo.css',
   '/mobile/manifest.json',

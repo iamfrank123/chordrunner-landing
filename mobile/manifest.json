@@ -2,7 +2,7 @@
   "name": "Chord Runner — Free Demo",
   "short_name": "ChordRunner",
   "description": "Play major chords on a MIDI keyboard, defeat monsters — free playable demo!",
-  "start_url": "/game.html",
+  "start_url": "/game",
   "scope": "/",
   "display": "fullscreen",
   "orientation": "landscape",
