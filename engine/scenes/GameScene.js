@@ -597,6 +597,12 @@ class GameScene extends Phaser.Scene {
         obs.state = 'active'; obs.timingStart = this.time.now;
         this._activeObstacle = obs; this._requiredChord = obs.chordKey;
         HUD.setRequiredChord(obs.chordKey);
+        
+        // Notify MidiManager (for microphone pipeline target filtering)
+        if (MidiManager.setGameTargetChord) {
+          MidiManager.setGameTargetChord(obs.chordKey);
+        }
+
         obs.setTint(0xffd166);
         if (obs._label) obs._label.setColor('#ffd166');
       }
@@ -621,6 +627,7 @@ class GameScene extends Phaser.Scene {
         obs.destroy();
         if (this._activeObstacle === obs) {
           this._activeObstacle = null; this._requiredChord = null; HUD.setRequiredChord(null);
+          if (MidiManager.setGameTargetChord) MidiManager.setGameTargetChord(null);
         }
       }
     });
@@ -637,7 +644,11 @@ class GameScene extends Phaser.Scene {
      INPUT RUNNER
   ───────────────────────────────────────── */
   _onChordDetected(matchedChords, rawNotes, isNoteOn) {
-    if (!this._gameActive || this._inputCooldown || !rawNotes?.length) return;
+    if (!this._gameActive || this._inputCooldown) return;
+    
+    // Check if we have either matched chords OR raw notes. If both are empty/null, ignore.
+    if ((!matchedChords || matchedChords.length === 0) && (!rawNotes || rawNotes.length === 0)) return;
+    
     if (!this._activeObstacle?.active) return;
     if (matchedChords.includes(this._requiredChord)) {
       this._onCorrectChord();
@@ -645,14 +656,14 @@ class GameScene extends Phaser.Scene {
     }
 
     if (!isNoteOn) return; // Non penalizzare mai i rilasci dei tasti
-
-    // Se l'utente sta suonando un accordo a 4-5 note (es. Cmaj9), 
-    // valuta se quelli premuti finora sono sotto-note valide prima di dire "WRONG"
+    // Se l'utente sta costruendo un accordo esteso (es. Cmaj9),
+    // consenti il pass-through SOLO se ha già almeno 3 note valide premute.
+    // Con 1 o 2 note — anche se sono note corrette dell'accordo — non basta.
     const reqNotes = CHORD_DB[this._requiredChord] ? CHORD_DB[this._requiredChord].notes : null;
-    if (reqNotes) {
+    if (reqNotes && rawNotes && rawNotes.length >= 3) {
       const isSubset = rawNotes.every(st => reqNotes.includes(st));
       if (isSubset) {
-        // L'utente ha in mano note parziali che formano il chord giusto, non penalizzare ancora
+        // L'utente ha 3+ note valide: potrebbe stare ancora costruendo un accordo esteso
         return;
       }
     }
@@ -695,6 +706,8 @@ class GameScene extends Phaser.Scene {
 
   _onWrongChord() {
     if (this._inputCooldown) return;
+    if (typeof MidiManager !== 'undefined' && MidiManager.isMic) return; // Disabilita feedback negativi (miss, damage) per input disordinati da microfono
+    
     HUD.flashWrong();
     GameStateManager.recordHit(false);
     this._stats.wrongChords++;
@@ -717,6 +730,7 @@ class GameScene extends Phaser.Scene {
     if (obs._label) obs._label.setAlpha(0.3);
     this._showFloatingLabel('MISS! ✗', this._W / 2, 70, '#ff9500');
     this._activeObstacle = null; this._requiredChord = null; HUD.setRequiredChord(null);
+    if (MidiManager.setGameTargetChord) MidiManager.setGameTargetChord(null);
     GameStateManager.recordHit(false);
     this._stats.wrongChords++;
     if (this._isSurvival && this._adaptiveDifficulty) {
@@ -945,6 +959,7 @@ class GameScene extends Phaser.Scene {
   _freezeObstacles() {
     this._obstacles.getChildren().forEach(o => { if (o.active && o.body) o.body.setVelocityX(0); });
     this._activeObstacle = null; this._requiredChord = null; HUD.setRequiredChord(null);
+    if (MidiManager.setGameTargetChord) MidiManager.setGameTargetChord(null);
   }
 
   _unfreezeObstacles() {
@@ -1079,6 +1094,7 @@ class GameScene extends Phaser.Scene {
   _clearActiveObstacle(delayMs = 0) {
     this.time.delayedCall(delayMs, () => {
       this._activeObstacle = null; this._requiredChord = null; HUD.setRequiredChord(null);
+      if (MidiManager.setGameTargetChord) MidiManager.setGameTargetChord(null);
     });
   }
 }

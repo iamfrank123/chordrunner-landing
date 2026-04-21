@@ -186,7 +186,7 @@ function midiToSemitone(midiNote) {
  */
 function recognizeChords(activeSemitones) {
   const played = Array.from(activeSemitones).sort((a, b) => a - b);
-  if (played.length < 2) return [];
+  if (played.length < 3) return []; // Require at least 3 distinct notes to form a chord
 
   // 1. Exact match (massima priorità)
   let exactMatches = [];

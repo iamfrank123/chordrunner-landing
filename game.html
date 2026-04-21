@@ -80,8 +80,8 @@
           <button id="demo-btn-midi" class="btn-primary" style="font-size:1.1rem; padding:18px;">
             🎹 Use MIDI Keyboard
           </button>
-          <button id="demo-btn-virtual" class="btn-secondary" style="font-size:1rem; padding:14px;">
-            🖱️ Left click to jump the obstacles (no keyboard)
+          <button id="demo-btn-mic" class="btn-primary" style="font-size:1.1rem; padding:18px; background: linear-gradient(135deg, #ff6b9d, #c44dff);">
+            🎤 Use Microphone
           </button>
         </div>
 
@@ -214,7 +214,7 @@
     <div id="game-container"></div>
 
     <!-- ══ Chord Panel — hidden in demo on all platforms ═══════ -->
-    <div id="chord-panel" style="display:none !important;">
+    <div id="chord-panel">
       <div id="chord-required">
         <span class="chord-label">Required chord:</span>
         <span id="chord-name" class="chord-name">—</span>
@@ -388,6 +388,20 @@
       var scripts = [
         // Demo flag system (must load first)
         'js/demoConfig.js',
+        // Audio Chord Recognition module
+        "audio-chord-recognition/utils/cosineSimilarity.js",
+        "audio-chord-recognition/utils/normalizeVector.js",
+        "audio-chord-recognition/utils/ringBuffer.js",
+        "audio-chord-recognition/models/chordTypes.js",
+        "audio-chord-recognition/models/chordTemplates.js",
+        "audio-chord-recognition/core/micInput.js",
+        "audio-chord-recognition/core/audioProcessor.js",
+        "audio-chord-recognition/core/chromaExtractor.js",
+        "audio-chord-recognition/pipeline/contextFilter.js",
+        "audio-chord-recognition/pipeline/smoother.js",
+        "audio-chord-recognition/pipeline/eventManager.js",
+        "audio-chord-recognition/pipeline/realtimeLoop.js",
+        "audio-chord-recognition/index.js",
         // Shared core engine (copied into engine/ by build script)
         'engine/config.js',
         'engine/chords.js',

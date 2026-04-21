@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Chord Recognition — Test</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a2e;
+      --accent: #6c63ff;
+      --accent2: #ff6b9d;
+      --text: #e8e8f0;
+      --text-dim: #666680;
+      --green: #00e676;
+      --red: #ff5252;
+      --yellow: #ffd740;
+      --border: rgba(108, 99, 255, 0.15);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      font-family: 'Inter', sans-serif;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3);
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border: none;
+      color: white;
+    }
+
+    .btn-stop {
+      background: linear-gradient(135deg, var(--red), #ff1744);
+      border: none;
+      color: white;
+    }
+
+    /* Main display */
+    .chord-display {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 3rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      min-width: 320px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chord-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--green));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .chord-display.active::before {
+      opacity: 1;
+    }
+
+    .chord-name {
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: -2px;
+      min-height: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .chord-name.detected {
+      color: var(--green);
+      text-shadow: 0 0 30px rgba(0, 230, 118, 0.3);
+    }
+
+    .chord-name.silence {
+      color: var(--text-dim);
+      font-size: 1.2rem;
+      font-weight: 400;
+    }
+
+    .confidence-bar {
+      margin-top: 1rem;
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.15s ease, background 0.3s ease;
+      width: 0%;
+      background: var(--accent);
+    }
+
+    .confidence-fill.high { background: var(--green); }
+    .confidence-fill.mid  { background: var(--yellow); }
+    .confidence-fill.low  { background: var(--red); }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    /* Chroma visualization */
+    .chroma-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .chroma-section h2 {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .chroma-bars {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 120px;
+    }
+
+    .chroma-bin {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .chroma-bar {
+      width: 100%;
+      min-height: 2px;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.1s ease, background 0.2s ease;
+      background: var(--accent);
+    }
+
+    .chroma-label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Context selector */
+    .context-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .context-section h2 {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .context-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    select {
+      font-family: 'Inter', sans-serif;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+
+    /* Event log */
+    .log-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .log-section h2 {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .log-entries {
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      color: var(--text-dim);
+    }
+
+    .log-entries .entry {
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .log-entries .entry .chord-tag {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .log-entries .entry .conf-tag {
+      color: var(--yellow);
+    }
+
+    /* Status indicator */
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      background: var(--red);
+    }
+
+    .status-dot.active {
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎤 Audio Chord Recognition</h1>
+  <p class="subtitle"><span class="status-dot" id="status-dot"></span><span id="status-text">Inactive</span></p>
+
+  <div class="controls">
+    <button class="btn-start" id="btn-start">🎙️ Start Microphone</button>
+    <button class="btn-stop" id="btn-stop" disabled>⏹️ Stop</button>
+  </div>
+
+  <div class="chord-display" id="chord-display">
+    <div class="chord-name silence" id="chord-name">Tap Start to begin</div>
+    <div class="confidence-bar">
+      <div class="confidence-fill" id="confidence-fill"></div>
+    </div>
+    <div class="meta-row">
+      <span id="meta-quality">—</span>
+      <span id="meta-confidence">—</span>
+      <span id="meta-stable">—</span>
+    </div>
+  </div>
+
+  <div class="chroma-section">
+    <h2>Live Chroma Vector</h2>
+    <div class="chroma-bars" id="chroma-bars"></div>
+  </div>
+
+  <div class="context-section">
+    <h2>Game Context (Optional Filter)</h2>
+    <div class="context-row">
+      <select id="ctx-root">
+        <option value="">Any Root</option>
+        <option value="C">C</option>
+        <option value="C#">C#</option>
+        <option value="D">D</option>
+        <option value="Eb">Eb</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+        <option value="F#">F#</option>
+        <option value="G">G</option>
+        <option value="Ab">Ab</option>
+        <option value="A">A</option>
+        <option value="Bb">Bb</option>
+        <option value="B">B</option>
+      </select>
+      <select id="ctx-quality">
+        <option value="">Any Quality</option>
+        <option value="major">Major</option>
+        <option value="minor">Minor</option>
+        <option value="maj7">Maj7</option>
+        <option value="min7">Min7</option>
+        <option value="dom7">Dom7</option>
+        <option value="dom9">9th</option>
+      </select>
+      <button id="btn-set-ctx">Set Context</button>
+      <button id="btn-clear-ctx">Clear</button>
+    </div>
+  </div>
+
+  <div class="log-section">
+    <h2>Event Log</h2>
+    <div class="log-entries" id="log-entries"></div>
+  </div>
+
+  <!-- Load module scripts in dependency order -->
+  <!-- Utils (no dependencies) -->
+  <script src="utils/cosineSimilarity.js"></script>
+  <script src="utils/normalizeVector.js"></script>
+  <script src="utils/ringBuffer.js"></script>
+
+  <!-- Models (depends on utils) -->
+  <script src="models/chordTypes.js"></script>
+  <script src="models/chordTemplates.js"></script>
+
+  <!-- Core (depends on models) -->
+  <script src="core/micInput.js"></script>
+  <script src="core/audioProcessor.js"></script>
+  <script src="core/chromaExtractor.js"></script>
+
+  <!-- Pipeline (depends on core + models) -->
+  <script src="pipeline/contextFilter.js"></script>
+  <script src="pipeline/smoother.js"></script>
+  <script src="pipeline/eventManager.js"></script>
+  <script src="pipeline/realtimeLoop.js"></script>
+
+  <!-- Public API (depends on everything) -->
+  <script src="index.js"></script>
+
+  <script>
+    /* ── DOM refs ──────────────────────────────────────────────── */
+    const btnStart     = document.getElementById('btn-start');
+    const btnStop      = document.getElementById('btn-stop');
+    const statusDot    = document.getElementById('status-dot');
+    const statusText   = document.getElementById('status-text');
+    const chordDisplay = document.getElementById('chord-display');
+    const chordNameEl  = document.getElementById('chord-name');
+    const confFill     = document.getElementById('confidence-fill');
+    const metaQuality  = document.getElementById('meta-quality');
+    const metaConf     = document.getElementById('meta-confidence');
+    const metaStable   = document.getElementById('meta-stable');
+    const chromaBarsEl = document.getElementById('chroma-bars');
+    const logEntries   = document.getElementById('log-entries');
+    const ctxRoot      = document.getElementById('ctx-root');
+    const ctxQuality   = document.getElementById('ctx-quality');
+    const btnSetCtx    = document.getElementById('btn-set-ctx');
+    const btnClearCtx  = document.getElementById('btn-clear-ctx');
+
+    /* ── Build chroma bars ────────────────────────────────────── */
+    const NOTE_LABELS = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+    const chromaBarEls = [];
+
+    NOTE_LABELS.forEach((note, i) => {
+      const bin = document.createElement('div');
+      bin.className = 'chroma-bin';
+
+      const bar = document.createElement('div');
+      bar.className = 'chroma-bar';
+      bar.style.height = '2px';
+
+      const label = document.createElement('div');
+      label.className = 'chroma-label';
+      label.textContent = note;
+
+      bin.appendChild(bar);
+      bin.appendChild(label);
+      chromaBarsEl.appendChild(bin);
+      chromaBarEls.push(bar);
+    });
+
+    /* ── Live chroma visualization (runs independently) ────── */
+    let chromaRAF = null;
+
+    function updateChromaVis() {
+      if (!AudioChordRecognition.isActive()) return;
+
+      const freqData = AudioProcessor.getFrequencyData();
+      if (freqData) {
+        const chroma = ChromaExtractor.extract(freqData);
+        for (let i = 0; i < 12; i++) {
+          const pct = Math.min(100, chroma[i] * 100 * 3); // scale for visibility
+          chromaBarEls[i].style.height = Math.max(2, pct) + '%';
+
+          // Color: brighter for higher energy
+          const hue = (i * 30) % 360;
+          chromaBarEls[i].style.background =
+            `hsl(${hue}, ${60 + pct * 0.4}%, ${30 + pct * 0.5}%)`;
+        }
+      }
+
+      chromaRAF = requestAnimationFrame(updateChromaVis);
+    }
+
+    /* ── Event handler ────────────────────────────────────────── */
+    AudioChordRecognition.onChordDetected((event) => {
+      if (!event) {
+        // Silence / no chord
+        chordNameEl.textContent = '🔇 Listening...';
+        chordNameEl.className = 'chord-name silence';
+        confFill.style.width = '0%';
+        confFill.className = 'confidence-fill';
+        metaQuality.textContent = '—';
+        metaConf.textContent = '—';
+        metaStable.textContent = '—';
+        return;
+      }
+
+      // Update chord display
+      chordNameEl.textContent = event.chord;
+      chordNameEl.className = 'chord-name detected';
+
+      // Confidence bar
+      const pct = Math.round(event.confidence * 100);
+      confFill.style.width = pct + '%';
+      confFill.className = 'confidence-fill ' +
+        (pct >= 75 ? 'high' : pct >= 55 ? 'mid' : 'low');
+
+      // Meta
+      metaQuality.textContent = 'Quality: ' + event.quality;
+      metaConf.textContent = 'Confidence: ' + pct + '%';
+      metaStable.textContent = event.stable ? '✅ Stable' : '⏳ Unstable';
+
+      // Log entry
+      const entry = document.createElement('div');
+      entry.className = 'entry';
+      const time = new Date(event.timestamp).toLocaleTimeString();
+      entry.innerHTML =
+        `<span class="chord-tag">${event.chord}</span> ` +
+        `<span class="conf-tag">${pct}%</span> ` +
+        `${event.root} ${event.quality} — ${time}`;
+      logEntries.prepend(entry);
+
+      // Keep log manageable
+      while (logEntries.children.length > 50) {
+        logEntries.removeChild(logEntries.lastChild);
+      }
+    });
+
+    /* ── Controls ─────────────────────────────────────────────── */
+    btnStart.addEventListener('click', async () => {
+      try {
+        btnStart.disabled = true;
+        btnStart.textContent = '⏳ Requesting mic...';
+
+        await AudioChordRecognition.startChordRecognition();
+
+        btnStart.textContent = '🎙️ Running';
+        btnStop.disabled = false;
+        statusDot.classList.add('active');
+        statusText.textContent = 'Active — listening';
+        chordDisplay.classList.add('active');
+        chordNameEl.textContent = '🔇 Listening...';
+        chordNameEl.className = 'chord-name silence';
+
+        // Start chroma visualization
+        chromaRAF = requestAnimationFrame(updateChromaVis);
+
+      } catch (err) {
+        btnStart.disabled = false;
+        btnStart.textContent = '🎙️ Start Microphone';
+        statusText.textContent = '❌ ' + err.message;
+        console.error(err);
+      }
+    });
+
+    btnStop.addEventListener('click', () => {
+      AudioChordRecognition.stopChordRecognition();
+
+      btnStart.disabled = false;
+      btnStart.textContent = '🎙️ Start Microphone';
+      btnStop.disabled = true;
+      statusDot.classList.remove('active');
+      statusText.textContent = 'Inactive';
+      chordDisplay.classList.remove('active');
+      chordNameEl.textContent = 'Stopped';
+      chordNameEl.className = 'chord-name silence';
+      confFill.style.width = '0%';
+
+      if (chromaRAF) cancelAnimationFrame(chromaRAF);
+
+      // Reset chroma bars
+      chromaBarEls.forEach(bar => { bar.style.height = '2px'; });
+    });
+
+    btnSetCtx.addEventListener('click', () => {
+      const root = ctxRoot.value || null;
+      const quality = ctxQuality.value || null;
+
+      if (root || quality) {
+        AudioChordRecognition.setGameContext({ root, quality });
+        statusText.textContent = `Context: ${root || '*'} ${quality || '*'}`;
+      }
+    });
+
+    btnClearCtx.addEventListener('click', () => {
+      AudioChordRecognition.setGameContext(null);
+      ctxRoot.value = '';
+      ctxQuality.value = '';
+      if (AudioChordRecognition.isActive()) {
+        statusText.textContent = 'Active — listening (no filter)';
+      }
+    });
+  </script>
+
+</body>
+</html>

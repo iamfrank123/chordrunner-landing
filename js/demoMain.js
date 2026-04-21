@@ -85,6 +85,9 @@ window.MidiManager = DemoMidiManager;
   const midiBtn = document.getElementById('demo-btn-midi');
   if (midiBtn) midiBtn.onclick = () => startWithMode(false);
 
+  const micBtn = document.getElementById('demo-btn-mic');
+  if (micBtn) micBtn.onclick = () => startWithMode(false);
+
   const virtBtn = document.getElementById('demo-btn-virtual');
   if (virtBtn) virtBtn.onclick = () => startWithMode(true);
 })();

@@ -227,6 +227,10 @@ class CombatManager {
     // Scegli accordo evitando ripetizioni
     this._currentChord = this._getNextChord();
 
+    if (typeof MidiManager !== 'undefined' && MidiManager.setGameTargetChord) {
+      MidiManager.setGameTargetChord(this._currentChord);
+    }
+
     this._awaitingInput = true;
     this._attackStart = this._scene.time.now;
     this._attackElapsed = 0; // reset local accumulator
@@ -401,7 +405,9 @@ class CombatManager {
   ───────────────────────────────────────────────────────────── */
   onChordInput(matchedChords, rawNotes, isNoteOn) {
     if (!this._active || !this._awaitingInput || this._inputCooldown) return;
-    if (!rawNotes || rawNotes.length === 0) return;
+    
+    // Check if we have either matched chords OR raw notes
+    if ((!matchedChords || matchedChords.length === 0) && (!rawNotes || rawNotes.length === 0)) return;
 
     if (matchedChords.includes(this._currentChord)) {
       this._onHit();
@@ -410,17 +416,22 @@ class CombatManager {
 
     if (!isNoteOn) return; // Ignore any processing that would penalize a key release
 
-    // Subset logic per accordi lunghi (maj7, min9)
+    // Subset logic per accordi lunghi (maj7, min9, ecc.).
+    // Pass-through SOLO se l'utente ha già almeno 3 note valide premute.
+    // Con 1 o 2 note non si concede nessun pass-through.
     const reqNotes = CHORD_DB[this._currentChord] ? CHORD_DB[this._currentChord].notes : null;
-    if (reqNotes) {
+    if (reqNotes && rawNotes && rawNotes.length >= 3) {
       const isSubset = rawNotes.every(st => reqNotes.includes(st));
       if (isSubset) {
-        // Sto costruendo l'accordo e non ho premuto nulla di errato
+        // L'utente ha 3+ note valide: potrebbe stare ancora costruendo un accordo esteso
         return;
       }
     }
 
     // Accordo sbagliato → trigger miss as wrong chord
+    if (typeof MidiManager !== 'undefined' && MidiManager.isMic) {
+      return; // Disabilita feedback negativo per microphone (evita miss accidentali per rumori)
+    }
     this._onMiss(true);
   }
 
@@ -430,6 +441,7 @@ class CombatManager {
   _onHit() {
     this._awaitingInput = false;
     this._destroyTargetVisual();
+    if (typeof MidiManager !== 'undefined' && MidiManager.setGameTargetChord) MidiManager.setGameTargetChord(null);
     if (this._countdownTimer) this._countdownTimer.remove();
     if (this._uiTimer) this._uiTimer.remove();
 
@@ -474,6 +486,7 @@ class CombatManager {
   _onMiss(isWrongChord = false) {
     this._awaitingInput = false;
     this._destroyTargetVisual();
+    if (typeof MidiManager !== 'undefined' && MidiManager.setGameTargetChord) MidiManager.setGameTargetChord(null);
     if (this._countdownTimer) this._countdownTimer.remove();
     if (this._uiTimer) this._uiTimer.remove();
 
@@ -757,6 +770,7 @@ class CombatManager {
   destroy() {
     this._active = false;
     this._destroyTargetVisual();
+    if (typeof MidiManager !== 'undefined' && MidiManager.setGameTargetChord) MidiManager.setGameTargetChord(null);
     if (this._attackTimer) this._attackTimer.remove();
     if (this._countdownTimer) this._countdownTimer.remove();
     if (this._monsterSprite) this._monsterSprite.destroy();
