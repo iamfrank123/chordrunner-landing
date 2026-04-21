@@ -358,7 +358,16 @@
         document.addEventListener('DOMContentLoaded', checkOrientation);
         window.addEventListener('resize', checkOrientation);
         window.addEventListener('orientationchange', function() {
-          setTimeout(checkOrientation, 200);
+          // Wait for browser to settle its new dimensions after rotation
+          setTimeout(function() {
+            checkOrientation();
+            // Force Phaser to re-measure and redraw the canvas at the real new size
+            var game = window._phaserGame;
+            if (game && game.scale) {
+              game.scale.resize(window.innerWidth, window.innerHeight);
+              game.scale.refresh();
+            }
+          }, 300);
         });
         checkOrientation();
       }

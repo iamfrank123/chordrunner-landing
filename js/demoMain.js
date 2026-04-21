@@ -128,6 +128,7 @@ const phaserConfig = {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
-  new Phaser.Game(phaserConfig);
+  // Store globally so orientation handlers can call game.scale.resize()
+  window._phaserGame = new Phaser.Game(phaserConfig);
   DemoMidiManager.init(null);
 });
