@@ -213,8 +213,8 @@
     <!-- ══ Phaser Canvas ═════════════════════════════════════════ -->
     <div id="game-container"></div>
 
-    <!-- ══ Chord Panel ═══════════════════════════════════════════ -->
-    <div id="chord-panel">
+    <!-- ══ Chord Panel — hidden in demo on all platforms ═══════ -->
+    <div id="chord-panel" style="display:none !important;">
       <div id="chord-required">
         <span class="chord-label">Required chord:</span>
         <span id="chord-name" class="chord-name">—</span>
@@ -271,11 +271,11 @@
 
   <script>
     /* ── Mobile detection + game-page fixes ────────────────────── */
-    (function() {
+    (function () {
       var isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
       var isPWA = (window.navigator.standalone === true) ||
-                  window.matchMedia('(display-mode: standalone)').matches ||
-                  window.matchMedia('(display-mode: fullscreen)').matches;
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.matchMedia('(display-mode: fullscreen)').matches;
 
       /* ── MOBILE BROWSER ONLY (not PWA, not desktop) ──────────── */
       if (isMobile && !isPWA) {
@@ -285,16 +285,12 @@
         if (vk) {
           vk.style.setProperty('display', 'none', 'important');
           var _origVK = vk.classList.remove.bind(vk.classList);
-          vk.classList.remove = function(cls) {
+          vk.classList.remove = function (cls) {
             if (cls === 'hidden') return;
             _origVK(cls);
           };
         }
 
-        /* 2. Hide the chord panel ("Required chord / You are playing")
-              It overlaps gameplay on portrait mobile browser */
-        var cp = document.getElementById('chord-panel');
-        if (cp) cp.style.setProperty('display', 'none', 'important');
 
         /* 3. Soft landscape hint — shown in portrait, auto-dismissed on rotate.
               NO forced rotation: Phaser must render at the real viewport size. */
@@ -307,10 +303,10 @@
           hint.innerHTML =
             '<span style="font-size:1.3rem;">🔄</span>' +
             '<span style="flex:1;font-size:0.82rem;line-height:1.4;">' +
-              'Rotate your screen to <strong>landscape</strong> for the best experience.' +
+            'Rotate your screen to <strong>landscape</strong> for the best experience.' +
             '</span>' +
             '<button id="cr-hint-close" style="background:none;border:none;color:rgba(255,255,255,0.5);' +
-              'font-size:1rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>';
+            'font-size:1rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>';
           hint.style.cssText = [
             'position:fixed',
             'bottom:12px',
@@ -357,9 +353,9 @@
 
         document.addEventListener('DOMContentLoaded', checkOrientation);
         window.addEventListener('resize', checkOrientation);
-        window.addEventListener('orientationchange', function() {
+        window.addEventListener('orientationchange', function () {
           // Wait for browser to settle its new dimensions after rotation
-          setTimeout(function() {
+          setTimeout(function () {
             checkOrientation();
             // Force Phaser to re-measure and redraw the canvas at the real new size
             var game = window._phaserGame;
@@ -373,13 +369,13 @@
       }
 
       /* ── HOME BUTTON: confirm modal on all mobile (browser + PWA) */
-      var modal    = document.getElementById('home-confirm-modal');
-      var btnYes   = document.getElementById('home-confirm-yes');
-      var btnNo    = document.getElementById('home-confirm-no');
-      var homeBtn  = document.getElementById('btn-home-hud');
+      var modal = document.getElementById('home-confirm-modal');
+      var btnYes = document.getElementById('home-confirm-yes');
+      var btnNo = document.getElementById('home-confirm-no');
+      var homeBtn = document.getElementById('btn-home-hud');
 
       if (homeBtn) {
-        homeBtn.addEventListener('click', function() {
+        homeBtn.addEventListener('click', function () {
           if (isMobile && modal) {
             modal.style.display = 'flex';
           } else {
@@ -389,12 +385,12 @@
       }
 
       if (btnYes) {
-        btnYes.addEventListener('click', function() {
+        btnYes.addEventListener('click', function () {
           window.location.href = '/';
         });
       }
       if (btnNo) {
-        btnNo.addEventListener('click', function() {
+        btnNo.addEventListener('click', function () {
           if (modal) modal.style.display = 'none';
         });
       }
