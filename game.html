@@ -270,30 +270,67 @@
   </div><!-- /app-wrapper -->
 
   <script>
-    /* ── Mobile detection helpers ──────────────────────────────── */
+    /* ── Mobile detection + game-page fixes ────────────────────── */
     (function() {
       var isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
       var isPWA = (window.navigator.standalone === true) ||
                   window.matchMedia('(display-mode: standalone)').matches ||
                   window.matchMedia('(display-mode: fullscreen)').matches;
 
-      /* 1. On mobile browser (not PWA), permanently suppress the virtual keyboard
-            so it doesn't overlap gameplay. PWA/desktop keep it as-is. */
+      /* ── MOBILE BROWSER ONLY (not PWA, not desktop) ──────────── */
       if (isMobile && !isPWA) {
+
+        /* 1. Hide the virtual keyboard bar so it doesn't overlap gameplay */
         var vk = document.getElementById('demo-virtual-keyboard');
         if (vk) {
-          // Override any future classList.remove('hidden') calls
           vk.style.setProperty('display', 'none', 'important');
-          var _orig = vk.classList.remove.bind(vk.classList);
+          var _origVK = vk.classList.remove.bind(vk.classList);
           vk.classList.remove = function(cls) {
-            if (cls === 'hidden') return; // swallow the show
-            _orig(cls);
+            if (cls === 'hidden') return;
+            _origVK(cls);
           };
         }
+
+        /* 2. Hide the chord panel ("Required chord / You are playing")
+              It overlaps gameplay on portrait mobile browser */
+        var cp = document.getElementById('chord-panel');
+        if (cp) cp.style.setProperty('display', 'none', 'important');
+        /* Also intercept future show() attempts by the engine */
+        var _cpOrig = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'style');
+        Object.defineProperty(document, '_hideCPOnMobile', { value: true });
+
+        /* 3. Auto-rotate the entire game to landscape using CSS transform.
+              We rotate #app-wrapper 90deg and swap w/h so it fills the screen. */
+        function applyLandscapeRotation() {
+          var isPort = window.innerHeight > window.innerWidth;
+          var wrapper = document.getElementById('app-wrapper');
+          if (!wrapper) return;
+          if (isPort) {
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+            wrapper.style.cssText = [
+              'position:fixed',
+              'top:0', 'left:0',
+              'width:' + vh + 'px',
+              'height:' + vw + 'px',
+              'transform-origin: top left',
+              'transform: rotate(90deg) translateY(-' + vw + 'px)',
+              'overflow:hidden'
+            ].join(';');
+          } else {
+            wrapper.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden';
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLandscapeRotation);
+        window.addEventListener('resize', applyLandscapeRotation);
+        window.addEventListener('orientationchange', function() {
+          setTimeout(applyLandscapeRotation, 150);
+        });
+        applyLandscapeRotation();
       }
 
-      /* 2. Home button: show confirm modal on all mobile (browser + PWA),
-            direct navigation on desktop. */
+      /* ── HOME BUTTON: confirm modal on all mobile (browser + PWA) */
       var modal    = document.getElementById('home-confirm-modal');
       var btnYes   = document.getElementById('home-confirm-yes');
       var btnNo    = document.getElementById('home-confirm-no');

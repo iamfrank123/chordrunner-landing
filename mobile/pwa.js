@@ -47,59 +47,10 @@
     });
   })();
 
-  /* ── 4. Rotate-to-landscape prompt ──────────────────────── */
-  /* Only shown inside the actual game page (game.html), NOT on the landing */
-  (function setupRotatePrompt() {
-    // Only activate on the game screen, not the demo landing page
-    var isGamePage = /game\.html/i.test(window.location.pathname) ||
-                     /\/game\/?$/i.test(window.location.pathname);
-    if (!isGamePage) return;
+  /* ── 4. Rotate-to-landscape prompt ───────────────────────── */
+  /* DISABLED: game.html auto-rotates via CSS transform instead.
+     No prompt is shown to the user on any page. */
 
-    var prompt = null;
-
-    function isPortrait() {
-      return window.innerHeight > window.innerWidth;
-    }
-
-    function createPrompt() {
-      if (prompt) return;
-      prompt = document.createElement('div');
-      prompt.id = 'cr-rotate-prompt';
-      prompt.innerHTML =
-        '<div class="cr-rotate-icon">📱</div>' +
-        '<div class="cr-rotate-title">Rotate your device</div>' +
-        '<div class="cr-rotate-sub">This game is designed for landscape mode. Please rotate your device horizontally.</div>';
-      document.body.appendChild(prompt);
-    }
-
-    function removePrompt() {
-      if (prompt && prompt.parentNode) {
-        prompt.parentNode.removeChild(prompt);
-        prompt = null;
-      }
-    }
-
-    function check() {
-      if (isPortrait()) {
-        createPrompt();
-      } else {
-        removePrompt();
-      }
-    }
-
-    // Run on load and on resize/orientation change
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', check);
-    } else {
-      check();
-    }
-
-    window.addEventListener('resize', check);
-    window.addEventListener('orientationchange', function () {
-      // Small delay to let browser update dimensions after rotation
-      setTimeout(check, 150);
-    });
-  })();
 
   /* ── 5. Android: Install button (BeforeInstallPrompt) ────── */
   (function setupAndroidInstall() {

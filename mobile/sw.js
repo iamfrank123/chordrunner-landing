@@ -2,7 +2,8 @@
    MIDI Chord Runner — Demo Service Worker
    ============================================================ */
 
-const CACHE_NAME = 'chord-runner-demo-v1';
+// ⬆ Bump this version string on every deploy to bust old caches.
+const CACHE_NAME = 'chord-runner-demo-v3';
 
 const SHELL_ASSETS = [
   '/game',
@@ -60,6 +61,22 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   if (url.protocol === 'chrome-extension:') return;
 
+  // Network-first for HTML navigation — always serve the freshest page
+  if (request.mode === 'navigate' || (request.headers.get('accept') || '').includes('text/html')) {
+    event.respondWith(
+      fetch(request)
+        .then((res) => {
+          if (res && res.status === 200) {
+            caches.open(CACHE_NAME).then((c) => c.put(request, res.clone()));
+          }
+          return res;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // Network-first for versioned JS/CSS (?v=...) — always get latest code
   if (url.search.startsWith('?v=')) {
     event.respondWith(
       fetch(request)
@@ -74,6 +91,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Cache-first for everything else (images, fonts, Phaser CDN)
   event.respondWith(
     caches.match(request).then((cached) => cached || fetch(request).then((res) => {
       if (res && res.status === 200 && res.type !== 'opaque') {
