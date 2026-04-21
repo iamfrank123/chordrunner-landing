@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="description"
     content="Chord Runner Demo — Play major chords on your MIDI keyboard and defeat monsters. Free playable demo." />
   <title>🎹 Chord Runner — Play Demo</title>
@@ -36,12 +37,10 @@
       <div class="overlay-box" style="max-width: 640px;">
 
         <!-- Back to menu -->
-        <a href="/"
-           style="position:absolute; top:24px; left:28px; color:rgba(255,255,255,0.35);
+        <a href="/" style="position:absolute; top:24px; left:28px; color:rgba(255,255,255,0.35);
                   font-size:0.85rem; font-weight:700; text-decoration:none;
                   display:flex; align-items:center; gap:6px; transition:color 0.2s;"
-           onmouseover="this.style.color='rgba(255,255,255,0.8)'"
-           onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+          onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
           ← Back to Menu
         </a>
 
@@ -57,7 +56,8 @@
 
         <p style="font-size:1rem; color:rgba(255,255,255,0.55); max-width:400px; line-height:1.65;">
           Connect your <strong style="color:#fff;">MIDI keyboard or electric piano</strong>
-          via USB, or <strong style="color:#ffd166;">left-click on the screen</strong> to jump obstacles if you don't have one.
+          via USB, or <strong style="color:#ffd166;">left-click on the screen</strong> to jump obstacles if you don't
+          have one.
         </p>
 
         <!-- Demo scope reminder -->
@@ -67,7 +67,8 @@
                       text-transform:uppercase; color:#06d6a0; margin-bottom:12px;">
             🎮 Demo Includes
           </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.88rem; color:rgba(255,255,255,0.65);">
+          <div
+            style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.88rem; color:rgba(255,255,255,0.65);">
             <div>✅ Major chords: C D E F G A B</div>
             <div>✅ Full run gameplay (60s)</div>
             <div>✅ Monster combat system</div>
@@ -135,31 +136,44 @@
           <span id="surv-time">0:00</span>
         </div>
         <div class="surv-stats-grid">
-          <div class="surv-stat"><div class="surv-val" id="surv-correct">0</div><div class="surv-lbl">✅ Correct</div></div>
-          <div class="surv-stat"><div class="surv-val" id="surv-wrong">0</div><div class="surv-lbl">❌ Wrong</div></div>
-          <div class="surv-stat"><div class="surv-val" id="surv-monsters">0</div><div class="surv-lbl">👾 Monsters</div></div>
-          <div class="surv-stat"><div class="surv-val" id="surv-accuracy">—%</div><div class="surv-lbl">🎯 Accuracy</div></div>
+          <div class="surv-stat">
+            <div class="surv-val" id="surv-correct">0</div>
+            <div class="surv-lbl">✅ Correct</div>
+          </div>
+          <div class="surv-stat">
+            <div class="surv-val" id="surv-wrong">0</div>
+            <div class="surv-lbl">❌ Wrong</div>
+          </div>
+          <div class="surv-stat">
+            <div class="surv-val" id="surv-monsters">0</div>
+            <div class="surv-lbl">👾 Monsters</div>
+          </div>
+          <div class="surv-stat">
+            <div class="surv-val" id="surv-accuracy">—%</div>
+            <div class="surv-lbl">🎯 Accuracy</div>
+          </div>
         </div>
         <div class="surv-score" id="surv-score">Score: 0</div>
         <button id="btn-surv-restart" class="btn-primary">🔄 Play Again</button>
-        <button id="btn-surv-menu" class="btn-secondary" style="margin-top:8px; background: linear-gradient(135deg, #ffd166, #ff9500); color: #1a1a2e; font-weight: 900; box-shadow: 0 4px 15px rgba(255, 149, 0, 0.4); text-transform: uppercase;">⭐ GET THE FULL GAME</button>
+        <button id="btn-surv-menu" class="btn-secondary"
+          style="margin-top:8px; background: linear-gradient(135deg, #ffd166, #ff9500); color: #1a1a2e; font-weight: 900; box-shadow: 0 4px 15px rgba(255, 149, 0, 0.4); text-transform: uppercase;">⭐
+          GET THE FULL GAME</button>
       </div>
     </div>
 
     <!-- ══ HUD ═══════════════════════════════════════════════════ -->
     <div id="hud">
-      <button id="btn-home-hud"
-        style="background:rgba(0,0,0,0.6); border:2px solid white; border-radius:8px;
+      <button id="btn-home-hud" style="background:rgba(0,0,0,0.6); border:2px solid white; border-radius:8px;
                color:white; cursor:pointer; display:flex; align-items:center;
                justify-content:center; font-size:1.2rem; padding:0 12px; margin-right:8px;"
-        onclick="window.location.href='/'" title="Main Menu">🏠</button>
+        title="Main Menu">🏠</button>
 
       <div id="hud-lives">❤️ <span id="lives-count">5</span></div>
       <div id="hud-score">⭐ <span id="score-count">0</span></div>
       <div id="hud-timer">⏱️ <span id="timer-count">60</span><span id="timer-unit">s</span></div>
       <div id="hud-level">🎵 <span id="level-name">Major Chords</span>
-        <div id="hud-preview" class="hidden"
-          style="color:#06d6a0; font-size:0.75rem; margin-top:4px; line-height:1.2;"></div>
+        <div id="hud-preview" class="hidden" style="color:#06d6a0; font-size:0.75rem; margin-top:4px; line-height:1.2;">
+        </div>
       </div>
       <div id="hud-speed">🚀 <span id="speed-name">5s</span></div>
 
@@ -176,14 +190,12 @@
 
     <!-- ══ Combat Panel ══════════════════════════════════════════ -->
     <div id="hud-combat-panel" class="hidden">
-      <div id="hud-combat-timer-text"
-        style="font-family:monospace; font-size:1.1rem; font-weight:bold;
+      <div id="hud-combat-timer-text" style="font-family:monospace; font-size:1.1rem; font-weight:bold;
                color:#ffd166; margin-bottom:4px; text-shadow:1px 1px 2px #000;">8.0s</div>
       <div style="width:100%; height:8px; background:rgba(0,0,0,0.5);
                   border-radius:4px; margin-bottom:8px;
                   border:1px solid rgba(255,255,255,0.2); overflow:hidden;">
-        <div id="hud-combat-timer-fill"
-          style="height:100%; width:100%; background:#ffd166; border-radius:4px;"></div>
+        <div id="hud-combat-timer-fill" style="height:100%; width:100%; background:#ffd166; border-radius:4px;"></div>
       </div>
       <div style="font-size:0.75rem; color:rgba(255,255,255,0.6); margin-bottom:3px;">⚔️ Attack chord:</div>
       <span id="hud-combat-chord" class="combat-chord">—</span>
@@ -214,8 +226,8 @@
     </div>
 
     <!-- ══ Virtual Keyboard ══════════════════════════════════════ -->
-    <div id="demo-virtual-keyboard" class="hidden"
-      style="position:fixed; bottom:0; left:0; right:0; z-index:50;
+    <!-- Note: hidden on mobile browsers (non-PWA) via JS below -->
+    <div id="demo-virtual-keyboard" class="hidden" style="position:fixed; bottom:0; left:0; right:0; z-index:50;
              display:flex; flex-direction:column; align-items:center;
              padding:8px 16px; gap:6px;
              background:rgba(10,12,30,0.85); backdrop-filter:blur(14px);
@@ -224,10 +236,91 @@
       <div id="demo-vk-buttons" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"></div>
     </div>
 
+    <!-- ══ Home Confirm Modal (mobile only) ════════════════════════ -->
+    <div id="home-confirm-modal" style="
+        display:none; position:fixed; inset:0; z-index:9999;
+        background:rgba(0,0,0,0.75); backdrop-filter:blur(8px);
+        align-items:center; justify-content:center;">
+      <div style="
+          background:linear-gradient(160deg,#1a1a35,#0f0f20);
+          border:1px solid rgba(255,255,255,0.12);
+          border-radius:24px; padding:36px 28px; text-align:center;
+          max-width:320px; width:90%; box-shadow:0 24px 64px rgba(0,0,0,0.7);">
+        <div style="font-size:2.4rem; margin-bottom:12px;">🏠</div>
+        <h3 style="font-size:1.2rem; font-weight:800; color:#e8eaf6; margin-bottom:8px;">Return to Menu?</h3>
+        <p style="font-size:0.88rem; color:rgba(255,255,255,0.5); line-height:1.6; margin-bottom:28px;">
+          Your current game progress will be lost.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <button id="home-confirm-yes" style="
+              padding:14px; border-radius:14px; border:none; cursor:pointer;
+              background:linear-gradient(135deg,#a29bfe,#6c63ff);
+              color:#fff; font-size:1rem; font-weight:800;">✅ Yes, go to Menu</button>
+          <button id="home-confirm-no" style="
+              padding:12px; border-radius:14px; border:none; cursor:pointer;
+              background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+              color:rgba(255,255,255,0.7); font-size:0.95rem; font-weight:600;">❌ Keep Playing</button>
+        </div>
+      </div>
+    </div>
+
     <!-- "notes-played" element (used by demoMidi, must exist outside chord-panel too) -->
     <!-- chord-panel #notes-played serves this purpose — demoMidi references it directly -->
 
   </div><!-- /app-wrapper -->
+
+  <script>
+    /* ── Mobile detection helpers ──────────────────────────────── */
+    (function() {
+      var isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      var isPWA = (window.navigator.standalone === true) ||
+                  window.matchMedia('(display-mode: standalone)').matches ||
+                  window.matchMedia('(display-mode: fullscreen)').matches;
+
+      /* 1. On mobile browser (not PWA), permanently suppress the virtual keyboard
+            so it doesn't overlap gameplay. PWA/desktop keep it as-is. */
+      if (isMobile && !isPWA) {
+        var vk = document.getElementById('demo-virtual-keyboard');
+        if (vk) {
+          // Override any future classList.remove('hidden') calls
+          vk.style.setProperty('display', 'none', 'important');
+          var _orig = vk.classList.remove.bind(vk.classList);
+          vk.classList.remove = function(cls) {
+            if (cls === 'hidden') return; // swallow the show
+            _orig(cls);
+          };
+        }
+      }
+
+      /* 2. Home button: show confirm modal on all mobile (browser + PWA),
+            direct navigation on desktop. */
+      var modal    = document.getElementById('home-confirm-modal');
+      var btnYes   = document.getElementById('home-confirm-yes');
+      var btnNo    = document.getElementById('home-confirm-no');
+      var homeBtn  = document.getElementById('btn-home-hud');
+
+      if (homeBtn) {
+        homeBtn.addEventListener('click', function() {
+          if (isMobile && modal) {
+            modal.style.display = 'flex';
+          } else {
+            window.location.href = '/';
+          }
+        });
+      }
+
+      if (btnYes) {
+        btnYes.addEventListener('click', function() {
+          window.location.href = '/';
+        });
+      }
+      if (btnNo) {
+        btnNo.addEventListener('click', function() {
+          if (modal) modal.style.display = 'none';
+        });
+      }
+    })();
+  </script>
 
   <!-- ══ Scripts — load shared engine from parent folder ════════ -->
   <script>
@@ -264,4 +357,5 @@
   <script src="mobile/pwa.js"></script>
 
 </body>
+
 </html>

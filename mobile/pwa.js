@@ -48,7 +48,13 @@
   })();
 
   /* ── 4. Rotate-to-landscape prompt ──────────────────────── */
+  /* Only shown inside the actual game page (game.html), NOT on the landing */
   (function setupRotatePrompt() {
+    // Only activate on the game screen, not the demo landing page
+    var isGamePage = /game\.html/i.test(window.location.pathname) ||
+                     /\/game\/?$/i.test(window.location.pathname);
+    if (!isGamePage) return;
+
     var prompt = null;
 
     function isPortrait() {
