@@ -225,15 +225,10 @@
       </div>
     </div>
 
-    <!-- ══ Virtual Keyboard ══════════════════════════════════════ -->
-    <!-- Note: hidden on mobile browsers (non-PWA) via JS below -->
-    <div id="demo-virtual-keyboard" class="hidden" style="position:fixed; bottom:0; left:0; right:0; z-index:50;
-             display:flex; flex-direction:column; align-items:center;
-             padding:8px 16px; gap:6px;
-             background:rgba(10,12,30,0.85); backdrop-filter:blur(14px);
-             border-top:1px solid rgba(255,255,255,0.06);">
+    <!-- ══ Virtual Keyboard ─ hidden in demo on all platforms ───══ -->
+    <div id="demo-virtual-keyboard" class="hidden" style="display:none !important;">
       <p class="vk-label">Touch a chord to play:</p>
-      <div id="demo-vk-buttons" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"></div>
+      <div id="demo-vk-buttons"></div>
     </div>
 
     <!-- ══ Home Confirm Modal (mobile only) ════════════════════════ -->
@@ -279,17 +274,6 @@
 
       /* ── MOBILE BROWSER ONLY (not PWA, not desktop) ──────────── */
       if (isMobile && !isPWA) {
-
-        /* 1. Hide the virtual keyboard bar so it doesn't overlap gameplay */
-        var vk = document.getElementById('demo-virtual-keyboard');
-        if (vk) {
-          vk.style.setProperty('display', 'none', 'important');
-          var _origVK = vk.classList.remove.bind(vk.classList);
-          vk.classList.remove = function (cls) {
-            if (cls === 'hidden') return;
-            _origVK(cls);
-          };
-        }
 
 
         /* 3. Soft landscape hint — shown in portrait, auto-dismissed on rotate.
