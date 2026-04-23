@@ -646,11 +646,15 @@ class GameScene extends Phaser.Scene {
   _onChordDetected(matchedChords, rawNotes, isNoteOn) {
     if (!this._gameActive || this._inputCooldown) return;
     
-    // Check if we have either matched chords OR raw notes. If both are empty/null, ignore.
-    if ((!matchedChords || matchedChords.length === 0) && (!rawNotes || rawNotes.length === 0)) return;
+    // Se non ci sono accordi riconosciuti E il player ha meno di 3 note premute,
+    // sta ancora costruendo l'accordo — ignoriamo senza penalizzare.
+    if (!matchedChords || matchedChords.length === 0) {
+      // Con meno di 3 note non è possibile formare alcun accordo, skip.
+      if (!rawNotes || rawNotes.length < 3) return;
+    }
     
     if (!this._activeObstacle?.active) return;
-    if (matchedChords.includes(this._requiredChord)) {
+    if (matchedChords && matchedChords.includes(this._requiredChord)) {
       this._onCorrectChord();
       return;
     }

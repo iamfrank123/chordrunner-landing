@@ -406,10 +406,13 @@ class CombatManager {
   onChordInput(matchedChords, rawNotes, isNoteOn) {
     if (!this._active || !this._awaitingInput || this._inputCooldown) return;
     
-    // Check if we have either matched chords OR raw notes
-    if ((!matchedChords || matchedChords.length === 0) && (!rawNotes || rawNotes.length === 0)) return;
+    // Se non ci sono accordi riconosciuti E il player ha meno di 3 note premute,
+    // sta ancora costruendo l'accordo — ignoriamo senza penalizzare.
+    if (!matchedChords || matchedChords.length === 0) {
+      if (!rawNotes || rawNotes.length < 3) return;
+    }
 
-    if (matchedChords.includes(this._currentChord)) {
+    if (matchedChords && matchedChords.includes(this._currentChord)) {
       this._onHit();
       return;
     }
